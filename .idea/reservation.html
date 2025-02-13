@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservation</title>
+    <link rel="stylesheet" href="mystyle.css">
+    <script> //with chatgpt
+        function captureBooks() {
+            let selectedBooks = [];
+            if (document.getElementById("class1").checked) {
+                selectedBooks.push("Computer networking: a top down approach");
+            }
+            if (document.getElementById("class2").checked) {
+                selectedBooks.push("Silberschatz's Operating System Concepts");
+            }
+            localStorage.setItem('selectedBooks', JSON.stringify(selectedBooks));
+            const orderedBooksDiv = document.getElementById("orderedBooks");
+            orderedBooksDiv.innerHTML = '';
+            selectedBooks.forEach(book => {
+                const p = document.createElement("p");
+                p.textContent = book;
+                orderedBooksDiv.appendChild(p);
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+    <div class="head-block-container">
+        <h1>CouBooks</h1>
+        <h2 class="second-title">A Webtech demo site</h2>
+    </div>
+    <a class="url" href="coubook.html">Home</a>
+    <a class="url" href="courses.html">Courses</a>
+    <a class="url" href="reservation.html">Reservation</a>
+    <a class="url" href="about.html">About</a>
+</header>
+    <main>
+        <section>
+            <h3>STEP 1: WHO ARE YOU</h3>
+            <p>Please provide some info about you, so we can search for the books you need...</p>
+            <form>
+                <label for="phase">Phase:</label>
+                <select id="phase" name="name">
+                    <option>First Bachelor</option>
+                    <option>Second Bachelor</option>
+                    <option>Third Bachelor</option>
+                    <option>Master</option>
+                </select><br><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email"><br><br>
+                <input type="submit" value="Next...">
+            </form>
+        </section>
+        <section>
+            <h3>STEP 2: WHAT BOOKS DO YOU NEED?</h3>
+            <p>Select the books you wish to order ...</p>
+            <form onsubmit="event.preventDefault(); captureBooks();">
+                <input type="checkbox" id="class1" name="class1" value="class1">
+                <label for="class1">Computer networking: a top down approach</label><br><br>
+                <input type="checkbox" id="class2" name="class2" value="class2">
+                <label for="class2">Silberschatz's Operating System Concepts</label><br><br>
+                <input type="submit" value="Next...">
+            </form>
+        </section>
+        <section>
+            <h3>YOU HAVE ORDERED...</h3>
+            <p>Below you find an overview of the books you have reserved. Once you confirm your reservation you can
+                pick them up at our KD and pay at the desk</p>
+            <div id="orderedBooks"></div>
+            <button>Confirm Reservation</button>
+        </section>
+    </main>
+    <footer>
+        <p>Copyright &copy; 2022 WebTech. KUL All Rights Reserved.
+            <span>
+                <a href="privacy.html">Privacy Policy</a>
+                |
+                <a href="terms.html">Terms of Use</a>
+            </span>
+        </p>
+    </footer>
+</body>
+</html>
