@@ -11,11 +11,11 @@
         <h1>CouBooks</h1>
         <h2 class="second-title">A Webtech demo site</h2>
     </div>
-    <a class="url" href="coubook.html">Home</a>
-    <a class="url" href="courses.html">Courses</a>
-    <a class="url" href="reservation.html">Reservation</a>
-    <a class="url" href="about.html">About</a>
-</header>
+        <a class="url" href="coubook.php">Home</a>
+        <a class="url" href="courses.php">Courses</a>
+        <a class="url" href="reservation.php">Reservation</a>
+        <a class="url" href="about.php">About</a>
+    </header>
     <main>
         <h1>About CouBooks</h1>
         <p>Welcome to CouBooks!</p>
@@ -34,7 +34,7 @@
         <p>Students can select their phase of study, choose the required books, and reserve them for pickup at a designated location.</p>
 
         <h2>Get Involved</h2>
-        <p>This website is part of an educational project, and we're always looking for ways to improve. Feel free to leave feedback on our <a href="feedback.html">Feedback Page</a>.</p>
+        <p>This website is part of an educational project, and we're always looking for ways to improve. Feel free to leave feedback on our <a href="feedback.php">Feedback Page</a>.</p>
 
         <h2>Contact Us</h2>
         <p>If you have any questions, reach out via email at <a href="mailto:tuur.colignon@student.kuleuven.be">tuur.colignon@student.kuleuven.be</a>.</p>
@@ -42,9 +42,9 @@
     <footer>
     <p>Copyright &copy; 2022 WebTech. KUL All Rights Reserved.
         <span>
-                <a href="privacy.html">Privacy Policy</a>
+                <a href="privacy.php">Privacy Policy</a>
                 |
-                <a href="terms.html">Terms of Use</a>
+                <a href="terms.php">Terms of Use</a>
             </span>
     </p>
 </footer>

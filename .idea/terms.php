@@ -11,12 +11,11 @@
       <h1>CouBooks</h1>
       <h2 class="second-title">A Webtech demo site</h2>
     </div>
-    <a class="url" href="coubook.html">Home</a>
-    <a class="url" href="courses.html">Courses</a>
-    <a class="url" href="reservation.html">Reservation</a>
-    <a class="url" href="about.html">About</a>
+    <a class="url" href="coubook.php">Home</a>
+    <a class="url" href="courses.php">Courses</a>
+    <a class="url" href="reservation.php">Reservation</a>
+    <a class="url" href="about.php">About</a>
 </header>
-
 <main>
     <h1>Terms of Use</h1>
     <p>Effective Date: 13-2-2025</p>
@@ -52,9 +51,9 @@
 <footer>
     <p>Copyright &copy; 2022 WebTech. KUL All Rights Reserved.
         <span>
-          <a href="privacy.html">Privacy Policy</a>
+          <a href="privacy.php">Privacy Policy</a>
           |
-          <a href="terms.html">Terms of Use</a>
+          <a href="terms.php">Terms of Use</a>
         </span>
     </p>
 </footer>
