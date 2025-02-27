@@ -31,11 +31,11 @@ class Shop {
         ]);
         $id = $db->lastInsertId();
         echo $id;
-        foreach ($data['books'] as $book) {
+        foreach ($data['book_ids'] as $book_id) {
             $stm = $db->prepare('INSERT INTO reservation_book (reservation, book) VALUES (:reservation, :book);');
             $stm->execute([
                 ':reservation' => $id,
-                ':book' => Book::getIdFromTitle($book)
+                ':book' => $book_id
             ]);
         }
         session_unset();

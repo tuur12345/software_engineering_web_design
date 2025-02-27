@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $feedback = new Feedback_db($text, $author, date("Y-m-d  H:i:s"));
     if (!empty($author) && !empty($text)) {
         $feedback->save();
-        header("Location: feedback.php");
+        header("Location: coubook.php");
         exit;
     }
 }

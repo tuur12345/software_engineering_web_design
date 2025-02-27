@@ -29,6 +29,18 @@ class Book {
         $this->obliged = $obliged;
         $this->course = $course;
     }
+    public static function getBookIdsFromCourseId($course_id): array {
+        $db = Db::getConnection();
+        $stmt =  $db->prepare('SELECT * FROM book WHERE course = :course_id');
+        $stmt->execute([':course_id' => $course_id]);
+        $result = array();
+        while  ($item = $stmt->fetch()) {
+            $book = new Book($item['title'], $item['isbn'], $item['obliged'], $item['course']);
+            $book->setId($item['id']);
+            $result[] = $book->getId();
+        }
+        return  $result;
+    }
     public static function getBooksFromCourseId($course_id): array {
         $db = Db::getConnection();
         $stmt =  $db->prepare('SELECT * FROM book WHERE course = :course_id');
@@ -41,20 +53,20 @@ class Book {
         }
         return  $result;
     }
-    public static function getBooksFromFase($fase): array {
+    public static function getBookIdsFromFase($fase): array {
         $courses = Courses_db::getCoursesFromFase($fase);
-        $booklist = [];
+        $book_ids = [];
         foreach ($courses as $course) {
-            $booklist = array_merge($booklist, Book::getBooksFromCourseId($course->getCourseId()));
+            $book_ids = array_merge($book_ids, Book::getBookIdsFromCourseId($course->getCourseId()));
         }
-        return $booklist;
+        return $book_ids;
     }
-    public static function getIdFromTitle($title): ?int {
+    public static function getTitleFromId($id): String {
         $db = Db::getConnection();
-        $stmt =  $db->prepare('SELECT id FROM book WHERE title = :title');
-        $stmt->execute([':title' => $title]);
+        $stmt =  $db->prepare('SELECT title FROM book WHERE id = :id');
+        $stmt->execute([':id' => $id]);
         if ($item = $stmt->fetch()) {
-            $result = $item['id'];
+            $result = $item['title'];
         } else {
             $result = null;
         }

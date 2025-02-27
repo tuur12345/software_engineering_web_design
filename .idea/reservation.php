@@ -4,33 +4,38 @@ require_once "Book.php";
 require_once "Courses_db.php";
 $shop = new Shop();
 
-$booklist = [];
-$selected_books = $_SESSION['selected_books'] ?? [];
+$book_ids = $_SESSION['book_ids'] ?? [];
+$selected_book_ids = $_SESSION['selected_book_ids'] ?? [];
 $email = "";
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $step = $shop->getStep();
+$step = $shop->getStep();
 
-    $data = [];
-
-    if ($step == 1) {
-        $data = ['fase' => htmlspecialchars($_POST['fase']), 'email' => htmlspecialchars($_POST['email'])];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if ($step == 1 && isset($_POST['email'], $_POST['fase'])) {
         $fase = htmlspecialchars($_POST['fase']);
         $email = htmlspecialchars($_POST['email']);
-        if ($fase == "First Bachelor") {
-            $booklist = Book::getBooksFromFase(1);
-        } else if ($fase == "Second Bachelor") {
-            $booklist = Book::getBooksFromFase(2);
-        } else if ($fase == "Third Bachelor") {
-            $booklist = Book::getBooksFromFase(3);
-        } else if ($fase == "Master") {
-            $booklist = Book::getBooksFromFase(4);
-        }
-    } elseif ($step == 2) {
-        $data = ['books' => $_POST['books']];
-        $selected_books = $_POST["books"];
-        $_SESSION['selected_books'] = $selected_books;
+        $data = ['fase' => $fase, 'email' => $email];
+
+        $faseMap = [
+            "First Bachelor" => 1,
+            "Second Bachelor" => 2,
+            "Third Bachelor" => 3,
+            "Master" => 4
+        ];
+        $book_ids = Book::getBookIdsFromFase($faseMap[$fase]);
+        $_SESSION['book_ids'] = $book_ids;
+
+        $shop->processStep($data);
     }
-    $shop->processStep($data);
+
+    if ($step == 2 && !empty($_POST['selected_book_ids'])) {
+        $selected_book_ids =  $_POST['selected_book_ids'];
+        $_SESSION['selected_book_ids'] = $_POST["selected_book_ids"];
+        $_SESSION['step'] = $step = 3;
+    }
+
+    if ($step == 3 && isset($_POST['confirm'])) {
+        $shop->processStep(['book_ids' => $_SESSION['selected_book_ids']]);
+    }
 }
 $step = $shop->getStep();
 ?>
@@ -77,10 +82,10 @@ $step = $shop->getStep();
             <p>Select the books you wish to order ...</p>
             <form method="post">
                 <ul>
-                    <?php foreach ($booklist as $book): ?>
+                    <?php foreach ($book_ids as $book_id): ?>
                         <li>
-                            <input type="checkbox" name="books[]" value="<?php echo $book->getTitle(); ?>">
-                            <label><?php echo $book->getTitle(); ?></label><br><br>
+                            <input type="checkbox" name="selected_book_ids[]" value="<?php echo $book_id; ?>" id="<?php echo $book_id; ?>">
+                            <label for="<?php echo $book_id; ?>"><?php echo Book::getTitleFromId($book_id); ?></label><br><br>
                         </li>
                     <?php  endforeach; ?>
                 </ul>
@@ -94,10 +99,10 @@ $step = $shop->getStep();
                 pick them up at our KD and pay at the desk</p>
             <form method="post">
                 <ul>
-                    <?php if (!empty($selected_books)): ?>
-                        <?php foreach ($selected_books as $book): ?>
+                    <?php if (!empty($selected_book_ids)): ?>
+                        <?php foreach ($selected_book_ids as $selected_book_id): ?>
                             <li>
-                                <label><?php echo htmlspecialchars($book); ?></label><br><br>
+                                <label><?php echo Book::getTitleFromId($selected_book_id); ?></label><br><br>
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
