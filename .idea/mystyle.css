@@ -69,10 +69,7 @@ select {
     border-radius: 4px;
     background-color: #f1f1f1;
 }
-input[type=email], input[type=text] {
-    margin-left: 20px;
-    padding: 10px;
-}
+
 .comment {
     background: #a0daf4;
     padding: 10px;
@@ -82,9 +79,6 @@ input[type=email], input[type=text] {
 
 em {
     padding-left: 60px;
-}
-.error {
-    color: red;
 }
 
 @media only screen and (max-width: 768px) {

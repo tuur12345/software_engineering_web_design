@@ -46,6 +46,7 @@ $step = $shop->getStep();
     <meta charset="UTF-8">
     <title>Reservation</title>
     <link rel="stylesheet" href="mystyle.css">
+    <link rel="stylesheet" href="reservation.css">
 </head>
 <body>
 <header>

@@ -1,0 +1,4 @@
+input[type=email], input[type=text] {
+    margin-left: 20px;
+    padding: 10px;
+}
