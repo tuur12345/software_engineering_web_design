@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Feedback</title>
     <link rel="stylesheet" href="mystyle.css">
+    <script src="Button.js"></script>
 </head>
 <body>
     <header>
@@ -32,12 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </header>
     <main>
         <h3>Add Feedback...</h3>
-        <form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>">
+        <form method="post">
             <label for="author">Author:</label>
-            <input type="text" id="author" name="author" required>
+            <input type="text" id="author" name="author" oninput="checkButtonValues(['author', 'feedback'], 'submit')">
             <p>Feedback:</p>
-            <textarea name="feedback" rows="5" style="width: 100%;" required></textarea>
-            <input type="submit" value="Submit">
+            <textarea name="feedback" id="feedback" rows="5" style="width: 100%;" oninput="checkButtonValues(['author', 'feedback'], 'submit')"></textarea>
+            <input type="submit" id="submit" value="Submit" disabled>
         </form>
     </main>
     <footer>
@@ -51,3 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </footer>
 </body>
 </html>
+
+<script>
+
+</script>

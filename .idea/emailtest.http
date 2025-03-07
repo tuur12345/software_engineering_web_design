@@ -1,0 +1,5 @@
+POST http://localhost:8080/check_user.php
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+email=your_test_email@kuleuven.be

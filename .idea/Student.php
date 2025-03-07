@@ -1,4 +1,5 @@
 <?php
+require_once "Db.php";
 
 class Student
 {
@@ -38,5 +39,19 @@ class Student
             ':email' => $this->email
         ]);
         return $db->lastInsertId();
+    }
+    public static function getStudentFromEmail($email): ?Student {
+        $db = Db::getConnection();
+        $stm = $db->prepare('SELECT id FROM student WHERE email = :email');
+        $stm->execute([
+            ':email' => $email
+        ]);
+        $student = new Student($email);
+        if ($item = $stm->fetch()) {
+            $student->setId($item['id']);
+        } else {
+            return null;
+        }
+        return $student;
     }
 }

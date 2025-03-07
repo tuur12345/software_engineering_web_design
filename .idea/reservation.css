@@ -2,3 +2,8 @@ input[type=email], input[type=text] {
     margin-left: 20px;
     padding: 10px;
 }
+.check_user_msg {
+     font-size: 14px;
+     color: #333;
+     margin-top: 10px;
+ }

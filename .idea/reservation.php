@@ -47,6 +47,33 @@ $step = $shop->getStep();
     <title>Reservation</title>
     <link rel="stylesheet" href="mystyle.css">
     <link rel="stylesheet" href="reservation.css">
+    <script src="Button.js"></script>
+    <script>
+        function send_post() {
+            const email = document.getElementById("email").value;
+            const data = new URLSearchParams();
+            data.append("email", email);
+            fetch("http://localhost:8080/check_user.php", {
+                method: "POST",
+                body: data,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "application/json"
+                }
+            })
+                .then((response) => {
+                    if (response.ok) return response.json();
+                    else {
+                        return response.json().then((json) => {
+                            document.getElementById("check_user_msg").textContent = "";
+                            throw new Error(json.message || "Network response was not ok");
+                        });
+                    }
+                })
+                .then(json => { document.getElementById("check_user_msg").textContent = json.message;})
+                .catch(error => {console.log(error.message);});
+        }
+    </script>
 </head>
 <body>
 <header>
@@ -73,8 +100,9 @@ $step = $shop->getStep();
                     <option>Master</option>
                 </select><br><br>
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required value="<?php echo $email; ?>"><br><br>
-                <input type="submit" value="Next...">
+                <input type="email" id="email" name="email" oninput="checkButtonValues(['email', 'phase'], 'next')" onchange="send_post()">
+                <p id="check_user_msg"></p><br><br>
+                <input type="submit" id="next" value="Next..." disabled>
             </form>
         </section>
     <?php elseif ($step == 2): ?>
@@ -85,12 +113,14 @@ $step = $shop->getStep();
                 <ul>
                     <?php foreach ($book_ids as $book_id): ?>
                         <li>
-                            <input type="checkbox" name="selected_book_ids[]" value="<?php echo $book_id; ?>" id="<?php echo $book_id; ?>">
+                            <input type="checkbox" name="selected_book_ids[]" value="<?php echo $book_id; ?>"
+                                   id="<?php echo $book_id; ?>"
+                                   oninput="checkCheckboxValues(<?php echo json_encode($book_ids); ?>, 'next_step2')">
                             <label for="<?php echo $book_id; ?>"><?php echo Book::getTitleFromId($book_id); ?></label><br><br>
                         </li>
                     <?php  endforeach; ?>
                 </ul>
-                <input type="submit" value="Next...">
+                <input type="submit" id="next_step2" value="Next..." disabled>
             </form>
         </section>
     <?php elseif ($step == 3): ?>
