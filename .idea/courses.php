@@ -2,7 +2,8 @@
 require_once "Courses_db.php";
 require_once "Book.php";
 require_once "Staff.php";
-$courses_list = Courses_db::getCourses();
+$fase = $_GET["fase"] ?? "0";
+$courses_list = ($fase === "0") ? Courses_db::getCourses() : Courses_db::getCoursesFromFase($fase);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,30 +12,7 @@ $courses_list = Courses_db::getCourses();
     <title>Courses</title>
     <link rel="stylesheet" href="mystyle.css">
     <link rel="stylesheet" href="courses.css">
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".book").forEach(book => {
-                book.addEventListener("click", function (event) {
-                    const isbn = event.currentTarget.dataset.isbn;
-                    const detailsContainer = event.currentTarget.querySelector(".book-details");
-                    fetch(`https://openlibrary.org/isbn/${isbn}.json`)
-                        .then((response) => {if (response.ok) return response.json()})
-                        .then((json) => {
-                            if (json && json.title) {
-                                detailsContainer.innerHTML =
-                                    `<p><strong>Title:</strong> ${json.title}</p>
-                                    <p><strong>Published:</strong> ${json.publish_date}</p>
-                                    <p><strong>Pages:</strong> ${json.number_of_pages ? json.number_of_pages : "Not available"}</p>`
-                                detailsContainer.classList.toggle('open');
-                            } else {
-                                detailsContainer.innerHTML = "<p>No additional information available.</p>";
-                                detailsContainer.classList.toggle('error');
-                            }
-                        });
-                });
-            });
-        });
-    </script>
+    <script src="BookDetailsListener.js"></script>
 </head>
 <body>
 <header>
@@ -50,39 +28,52 @@ $courses_list = Courses_db::getCourses();
 <main> <!-- layout mostly by chatgpt -->
     <div>
         <p>Below you can find an overview of all available courses.</p>
+        <form method="get" action="">
+            <select name="fase">
+                <option value="0" <?php echo $fase == "0" ? "selected" : ""; ?>>All</option>
+                <option value="1" <?php echo $fase == "1" ? "selected" : ""; ?>>First bachelor</option>
+                <option value="2" <?php echo $fase == "2" ? "selected" : ""; ?>>Second bachelor</option>
+                <option value="3" <?php echo $fase == "3" ? "selected" : ""; ?>>Third bachelor</option>
+                <option value="4" <?php echo $fase == "4" ? "selected" : ""; ?>>Master</option>
+            </select>
+            <input type="submit" value="Filter">
+        </form>
         <ul style="padding: 0;">
-            <?php foreach ($courses_list as $course): ?>
-                <li style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
-                    <h3 style="margin: 0;"><?php echo $course->getCourseId(); ?>: <?php echo $course->getName(); ?></h3>
-                    <p style="margin: 5px 0;">
-                        <strong>Fase:</strong> <?php echo $course->getFase(); ?> |
-                        <strong>Instructor:</strong>
-                        <?php
-                        $staff = Staff::getStaffFromCourse($course->getStaff()); ?>
-                        <span style='font-weight: bold;'><?php echo $staff->getName(); ?></span>
-                        <a href="mailto: <?php echo $staff->getEmail(); ?>" style='color: #0073e6; text-decoration: none;'>
-                            (<?php echo $staff->getEmail(); ?>)
-                        </a>
-                    </p>
+            <?php if (empty($courses_list)): ?>
+                <li style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;"><i>No courses available</i></li>
+            <?php else:
+                foreach ($courses_list as $course): ?>
+                    <li style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                        <h3 style="margin: 0;"><?php echo $course->getCourseId(); ?>: <?php echo $course->getName(); ?></h3>
+                        <p style="margin: 5px 0;">
+                            <strong>Fase:</strong> <?php echo $course->getFase(); ?> |
+                            <strong>Instructor:</strong>
+                            <?php $staff = Staff::getStaffFromCourse($course->getStaff()); ?>
+                            <span style='font-weight: bold;'><?php echo $staff->getName(); ?></span>
+                            <a href="mailto: <?php echo $staff->getEmail(); ?>" style='color: #0073e6; text-decoration: none;'>
+                                (<?php echo $staff->getEmail(); ?>)
+                            </a>
+                        </p>
 
-                    <h4 style="margin: 10px 0 5px;">Books:</h4>
-                    <ul style="margin: 0; padding-left: 20px;">
-                        <?php $book_list = Book::getBooksFromCourseId($course->getCourseId());
-                        if (empty($book_list)): ?>
-                            <li><i>No books available</i></li>
-                        <?php else:
-                            foreach ($book_list as $book): ?>
-                                <li class="book" data-isbn="<?php echo $book->getIsbn(); ?>">
-                                    <b><?php echo $book->getTitle(); ?></b>
-                                    (ISBN: <?php echo $book->getIsbn(); ?>) -
-                                    <i><?php echo $book->isObliged() ? "Obliged" : "Not Obliged"; ?></i>
-                                    <div class="book-details"></div>
-                                </li>
-                            <?php endforeach;
-                        endif; ?>
-                    </ul>
-                </li>
-            <?php endforeach; ?>
+                        <h4 style="margin: 10px 0 5px;">Books:</h4>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <?php $book_list = Book::getBooksFromCourseId($course->getCourseId());
+                            if (empty($book_list)): ?>
+                                <li><i>No books available</i></li>
+                            <?php else:
+                                foreach ($book_list as $book): ?>
+                                    <li class="book" data-isbn="<?php echo $book->getIsbn(); ?>">
+                                        <b><?php echo $book->getTitle(); ?></b>
+                                        (ISBN: <?php echo $book->getIsbn(); ?>) -
+                                        <i><?php echo $book->isObliged() ? "Obliged" : "Not Obliged"; ?></i>
+                                        <div class="book-details"></div>
+                                    </li>
+                                <?php endforeach;
+                            endif; ?>
+                        </ul>
+                    </li>
+                <?php endforeach;
+            endif; ?>
         </ul>
     </div>
 </main>

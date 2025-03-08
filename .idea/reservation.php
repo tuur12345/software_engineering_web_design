@@ -14,14 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fase = htmlspecialchars($_POST['fase']);
         $email = htmlspecialchars($_POST['email']);
         $data = ['fase' => $fase, 'email' => $email];
-
-        $faseMap = [
-            "First Bachelor" => 1,
-            "Second Bachelor" => 2,
-            "Third Bachelor" => 3,
-            "Master" => 4
-        ];
-        $book_ids = Book::getBookIdsFromFase($faseMap[$fase]);
+        $book_ids = Book::getBookIdsFromFase($fase);
         $_SESSION['book_ids'] = $book_ids;
 
         $shop->processStep($data);
@@ -48,32 +41,7 @@ $step = $shop->getStep();
     <link rel="stylesheet" href="mystyle.css">
     <link rel="stylesheet" href="reservation.css">
     <script src="Button.js"></script>
-    <script>
-        function send_post() {
-            const email = document.getElementById("email").value;
-            const data = new URLSearchParams();
-            data.append("email", email);
-            fetch("http://localhost:8080/check_user.php", {
-                method: "POST",
-                body: data,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json"
-                }
-            })
-                .then((response) => {
-                    if (response.ok) return response.json();
-                    else {
-                        return response.json().then((json) => {
-                            document.getElementById("check_user_msg").textContent = "";
-                            throw new Error(json.message || "Network response was not ok");
-                        });
-                    }
-                })
-                .then(json => { document.getElementById("check_user_msg").textContent = json.message;})
-                .catch(error => {console.log(error.message);});
-        }
-    </script>
+    <script src="Post.js"></script>
 </head>
 <body>
 <header>
@@ -94,14 +62,14 @@ $step = $shop->getStep();
             <form method="post">
                 <label for="phase">Phase:</label>
                 <select id="phase" name="fase">
-                    <option>First Bachelor</option>
-                    <option>Second Bachelor</option>
-                    <option>Third Bachelor</option>
-                    <option>Master</option>
+                    <option value="1">First Bachelor</option>
+                    <option value="2">Second Bachelor</option>
+                    <option value="3">Third Bachelor</option>
+                    <option value="4">Master</option>
                 </select><br><br>
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" oninput="checkButtonValues(['email', 'phase'], 'next')" onchange="send_post()">
-                <p id="check_user_msg"></p><br><br>
+                <p id="check_user_msg"></p>
                 <input type="submit" id="next" value="Next..." disabled>
             </form>
         </section>
