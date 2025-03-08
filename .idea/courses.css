@@ -1,14 +1,63 @@
-/* For the overall book list styling */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.course, .no-course {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.course {
+    cursor: pointer;
+}
+
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.course-header h3 {
+    margin: 0;
+}
+
+.course-details {
+    display: none;
+    margin-top: 10px;
+}
+
+.course-details.open {
+    display: block;
+}
+
+.staff-name {
+    font-weight: bold;
+}
+
+.staff-email {
+    color: #0073e6;
+    text-decoration: none;
+}
+
+.books-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
 .book {
     cursor: pointer;
     padding: 10px;
     transition: background-color 0.3s;
-}
-ul {
-    list-style-type: none;
+    border-radius: 5px;
 }
 
 .book:hover {
+    background-color: #efeeee;
+}
+.course:hover {
     background-color: #f9f9f9;
 }
 
@@ -30,13 +79,14 @@ ul {
     max-height: 500px;
     display: block;
 }
+
 .book-details.error {
     max-height: 500px;
     display: block;
-    background-color: #f8d7da; /* Red background for errors */
-    color: #721c24; /* Dark red text */
+    background-color: #f8d7da;
+    color: #721c24;
 }
+
 .book-details p {
     margin: 0;
 }
-

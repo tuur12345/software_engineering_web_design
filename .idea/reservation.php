@@ -20,6 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $shop->processStep($data);
     }
 
+    if ($step == 2 && empty($book_ids)) {
+        session_unset();
+        header('Location: coubook.php');
+        exit;
+    }
+
     if ($step == 2 && !empty($_POST['selected_book_ids'])) {
         $selected_book_ids =  $_POST['selected_book_ids'];
         $_SESSION['selected_book_ids'] = $_POST["selected_book_ids"];
@@ -55,9 +61,15 @@ $step = $shop->getStep();
     <a class="url" href="about.php">About</a>
 </header>
 <main>
+    <div class="progress-container">
+        <div class="progress-step <?php echo $step >= 1 ? 'active' : ''; ?> <?php echo $step > 1 ? 'completed' : ''; ?>">1</div>
+        <div class="progress-step <?php echo $step >= 2 ? 'active' : ''; ?> <?php echo $step > 2 ? 'completed' : ''; ?>">2</div>
+        <div class="progress-step <?php echo $step == 3 ? 'active' : ''; ?>">3</div>
+    </div>
+
     <?php if ($step == 1): ?>
         <section>
-            <h3>STEP 1: WHO ARE YOU</h3>
+            <h3>WHO ARE YOU</h3>
             <p>Please provide some info about you, so we can search for the books you need...</p>
             <form method="post">
                 <label for="phase">Phase:</label>
@@ -75,20 +87,31 @@ $step = $shop->getStep();
         </section>
     <?php elseif ($step == 2): ?>
         <section>
-            <h3>STEP 2: WHAT BOOKS DO YOU NEED?</h3>
+            <h3>WHAT BOOKS DO YOU NEED?</h3>
             <p>Select the books you wish to order ...</p>
             <form method="post">
-                <ul>
-                    <?php foreach ($book_ids as $book_id): ?>
+                <ul class="books">
+                    <?php if (empty($book_ids)):?>
                         <li>
-                            <input type="checkbox" name="selected_book_ids[]" value="<?php echo $book_id; ?>"
-                                   id="<?php echo $book_id; ?>"
-                                   oninput="checkCheckboxValues(<?php echo json_encode($book_ids); ?>, 'next_step2')">
-                            <label for="<?php echo $book_id; ?>"><?php echo Book::getTitleFromId($book_id); ?></label><br><br>
+                            <p>No books available.</p>
+                            <form method="post">
+                                <input type="submit" value="Return to home page">
+                            </form>
                         </li>
-                    <?php  endforeach; ?>
+                    <?php else:
+                        foreach ($book_ids as $book_id): ?>
+                            <li>
+                                <input type="checkbox" name="selected_book_ids[]" value="<?php echo $book_id; ?>"
+                                       id="<?php echo $book_id; ?>"
+                                       oninput="checkCheckboxValues(<?php echo json_encode($book_ids); ?>, 'next_step2')">
+                                <label for="<?php echo $book_id; ?>"><?php echo Book::getTitleFromId($book_id); ?></label><br><br>
+                            </li>
+                        <?php  endforeach;?>
+                    <?php endif;?>
                 </ul>
-                <input type="submit" id="next_step2" value="Next..." disabled>
+                <?php if (!empty($book_ids)): ?>
+                    <input type="submit" id="next_step2" value="Next..." disabled>
+                <?php endif;?>
             </form>
         </section>
     <?php elseif ($step == 3): ?>
